@@ -1,298 +1,112 @@
-# クイックスタート
+# クイックスタートガイド
 
-このガイドでは、`fomage`をローカル環境でセットアップし、実行するまでの手順を説明します。
+このガイドでは、`fomage`を5分でセットアップし、`fonsole`のバックアップデータを管理し始めるための手順を説明します。推奨される `Docker Compose` を利用した方法で進めます。
 
-## セットアップ
+## 1. 前提条件
 
-### 前提条件
+ローカル環境に以下のツールがインストールされていることを確認してください。
 
-- Java 17以上
-- Gradle 7.0以上
-- MongoDB 4.4以上
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-### インストール
+## 2. セットアップ
 
-1.  リポジトリをクローン
-    ```bash
-    git clone <repository-url>
-    cd fomage
-    ```
+### ステップ1: リポジトリをクローン
 
-2.  プロジェクトをビルド
-    ```bash
-    ./gradlew build
-    ```
-
-3.  MongoDBを起動
-    ```bash
-    # MongoDBがインストールされている場合
-    mongod
-    
-    # Dockerを使用する場合
-    docker run -d -p 27017:27017 --name mongodb mongo:4.4
-    ```
-
-## 実行
-
-### 開発環境での実行
-
-1.  REST APIを起動
-    ```bash
-    ./gradlew :fomage-api:bootRun
-    ```
-
-2.  Web UIを起動（別のターミナルで）
-    ```bash
-    ./gradlew :fomage:bootRun
-    ```
-
-### 本番環境での実行
-
-1.  JARファイルをビルド
-    ```bash
-    ./gradlew :fomage-api:bootJar
-    ./gradlew :fomage:bootJar
-    ```
-
-2.  アプリケーションを起動
-    ```bash
-    # API
-    java -jar fomage-api/build/libs/fomage-api-0.0.1-SNAPSHOT.jar
-    
-    # Web UI
-    java -jar fomage/build/libs/fomage-0.0.1-SNAPSHOT.jar
-    ```
-
-## 📋 詳細なセットアップ
-
-### 方法1: Docker Compose（推奨）
-
-最も簡単な方法です。すべてのサービスが自動的に設定されます。
+まず、`fomage`のリポジトリをローカルにクローンします。
 
 ```bash
-# 1. リポジトリをクローン
-git clone <repository-url>
-cd fomage
+git clone https://github.com/kigawa-net/fonsole-doc.git
+cd fonsole-doc
+```
 
-# 2. 環境変数を設定
-cp env.example .env
 
-# 3. サービスを起動
+### ステップ2: `.env` ファイルの作成
+
+`fomage`の動作に必要な設定を行うため、プロジェクトのルートディレクトリに `.env` ファイルを作成します。
+以下は、ローカルの `fonsole` データベースに接続するための設定例です。
+
+```bash
+# .env ファイルを作成して、以下の内容をコピー＆ペーストしてください。
+touch .env
+```
+
+**.env ファイルの内容:**
+```dotenv
+# Fomage アプリケーション設定
+FOMAGE_SERVER_PORT=8080
+
+# Fonsole の MongoDB データベース接続設定
+# 接続先のURIを環境に合わせて変更してください
+MONGODB_URI=mongodb://admin:password123@localhost:27017/fonsole-backup?authSource=admin
+
+# ログレベル (DEBUG, INFO, WARN, ERROR)
+LOG_LEVEL=INFO
+```
+
+### ステップ3: アプリケーションの起動
+
+`docker-compose` を使って、`fomage` と関連サービス（MongoDBなど）を一度に起動します。
+
+```bash
 docker-compose up -d
-
-# 4. ログを確認
-docker-compose logs -f fomage-app
-
-# 5. サービスを停止
-docker-compose down
 ```
 
-### 方法2: ローカル開発環境
+起動には数分かかる場合があります。
 
-より詳細な制御が必要な場合や、開発を行う場合に適しています。
+## 3. 動作確認
 
-#### 必要なツール
+サービスが正常に起動したか確認しましょう。
 
-- Java 17以上
-- Gradle 8.0以上
-- MongoDB 5.0以上
+### Fomage管理パネルへのアクセス
 
-#### セットアップ手順
-
-```bash
-# 1. リポジトリをクローン
-git clone <repository-url>
-cd fomage
-
-# 2. 環境変数を設定
-cp env.example .env
-
-# 3. MongoDBを起動（Dockerを使用）
-docker run -d \
-  --name mongodb \
-  -p 27017:27017 \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=password123 \
-  mongo:7.0
-
-# 4. アプリケーションをビルド
-./gradlew build
-
-# 5. アプリケーションを実行
-./gradlew run
-```
-
-## 🔧 設定
-
-### 環境変数
-
-主要な環境変数とその説明：
-
-| 変数名 | 説明 | デフォルト値 |
-|--------|------|-------------|
-| `MONGODB_URI` | MongoDB接続文字列 | `mongodb://localhost:27017` |
-| `MONGODB_DATABASE` | データベース名 | `fomage` |
-| `SERVER_PORT` | サーバーポート | `8080` |
-| `LOG_LEVEL` | ログレベル | `INFO` |
-
-### データベース設定
-
-MongoDBの接続設定を変更する場合：
-
-```bash
-# .envファイルで設定
-MONGODB_URI=mongodb://username:password@host:port/database
-MONGODB_DATABASE=your_database_name
-```
-
-## 🧪 テスト
-
-### アプリケーションの動作確認
-
-```bash
-# ヘルスチェック
-curl http://localhost:8080/health
-
-# アプリケーション情報
-curl http://localhost:8080/api/v1/info
-```
-
-### テストの実行
-
-```bash
-# 全テストを実行
-./gradlew test
-
-# 特定のテストを実行
-./gradlew test --tests UserServiceTest
-```
-
-## 📊 監視とログ
+Webブラウザで [http://localhost:8080](http://localhost:8080) を開きます。
+`fomage` のダッシュボードが表示されれば成功です。`fonsole`のプロジェクトデータが表示されていることを確認してください。
 
 ### ログの確認
 
-```bash
-# Docker Composeの場合
-docker-compose logs -f fomage-app
+何か問題が発生した場合や、動作状況を確認したい場合は、以下のコマンドでログを参照できます。
 
-# ローカル実行の場合
-tail -f logs/application.log
+```bash
+docker-compose logs -f
 ```
 
-### メトリクスの確認
+## 4. アプリケーションの停止
 
-- **Prometheus**: http://localhost:9091
-- **Grafana**: http://localhost:3000 (admin/admin123)
-
-### MongoDB管理
-
-- **MongoDB Express**: http://localhost:8081 (admin/password123)
-
-## 🐛 トラブルシューティング
-
-### よくある問題
-
-#### 1. ポートが既に使用されている
+`fomage`を停止するには、以下のコマンドを実行します。
 
 ```bash
-# 使用中のポートを確認
-lsof -i :8080
-
-# 別のポートを使用
-SERVER_PORT=8082
+docker-compose down
 ```
-
-#### 2. MongoDB接続エラー
-
+`-v` オプションを付けると、Dockerボリューム（データベースのデータなど）も一緒に削除されます。
 ```bash
-# MongoDBの状態を確認
-docker-compose ps mongodb
-
-# MongoDBログを確認
-docker-compose logs mongodb
-```
-
-#### 3. メモリ不足エラー
-
-```bash
-# JVMヒープサイズを増加
-JAVA_OPTS="-Xms1g -Xmx2g" ./gradlew run
-```
-
-#### 4. Dockerイメージのビルドエラー
-
-```bash
-# Dockerキャッシュをクリア
-docker system prune -a
-
-# イメージを再ビルド
-docker-compose build --no-cache
-```
-
-### ログレベルの変更
-
-デバッグ情報が必要な場合：
-
-```bash
-# .envファイルで設定
-LOG_LEVEL=DEBUG
-```
-
-## 🔄 開発ワークフロー
-
-### 1. 機能開発
-
-```bash
-# 新しいブランチを作成
-git checkout -b feature/new-feature
-
-# コードを編集
-# ...
-
-# テストを実行
-./gradlew test
-
-# コミット
-git add .
-git commit -m "Add new feature"
-
-# プルリクエストを作成
-git push origin feature/new-feature
-```
-
-### 2. ホットリロード（開発時）
-
-```bash
-# ファイル変更を監視して自動再起動
-./gradlew run --continuous
-```
-
-### 3. プロファイリング
-
-```bash
-# JFRを使用したプロファイリング
-java -XX:+FlightRecorder -XX:StartFlightRecording=duration=60s,filename=profile.jfr -jar build/libs/fomage-all.jar
+docker-compose down -v
 ```
 
 ## 📚 次のステップ
 
-1. **[開発ガイド](DEVELOPMENT.md)** - 詳細な開発情報
-2. **[API ドキュメント](API.md)** - API仕様の詳細
-3. **[アーキテクチャドキュメント](ARCHITECTURE.md)** - システム設計の詳細
+より詳細な情報については、以下のドキュメントを参照してください。
+
+1.  **[設定ガイド](CONFIGURATION.md)**: 環境変数や設定の詳細について説明します。
+2.  **[開発ガイド](DEVELOPMENT.md)**: ローカルでの開発環境構築、テスト、デバッグ、開発ワークフローについて説明します。
+3.  **[監視ガイド](MONITORING.md)**: ログの確認方法やヘルスチェックについて説明します。
+4.  **[トラブルシューティング](TROUBLESHOOTING.md)**: よくある問題とその解決策をまとめています。
+5.  **[APIドキュメント](API_OVERVIEW.md)**: APIの仕様について説明します。
+6.  **[アーキテクチャ](ARCHITECTURE.md)**: システム全体の設計について説明します。
 
 ## 🆘 サポート
 
 問題が発生した場合：
 
-1. **[トラブルシューティング](#トラブルシューティング)** セクションを確認
-2. **[GitHub Issues](https://github.com/your-repo/issues)** で既存の問題を検索
-3. 新しいIssueを作成
+1.  **[トラブルシューティング](TROUBLESHOOTING.md)** セクションを確認
+2.  **[GitHub Issues](https://github.com/your-repo/issues)** で既存の問題を検索
+3.  新しいIssueを作成
 
 ## 📝 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|----------|
-| 1.0.0 | 2024-01-01 | 初回リリース |
+| バージョン | 日付       | 変更内容     |
+|-----------|------------|--------------|
+| 1.0.0     | 2024-01-01 | 初回リリース |
 
 ---
 

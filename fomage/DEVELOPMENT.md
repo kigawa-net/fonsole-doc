@@ -63,6 +63,45 @@ MONGODB_DATABASE=fomage_dev
 LOG_LEVEL=DEBUG
 ```
 
+### ローカルでの起動手順
+
+1.  **リポジトリをクローン**:
+    ```bash
+    git clone <repository-url>
+    cd fomage
+    ```
+
+2.  **環境変数を設定**:
+    `.env.example` をコピーして `.env` ファイルを作成し、環境に合わせて編集します。
+    ```bash
+    cp env.example .env
+    ```
+
+3.  **MongoDBを起動**:
+    開発用にローカルでMongoDBを起動します。Dockerを使用すると簡単です。
+    ```bash
+    docker run -d \
+      --name mongodb \
+      -p 27017:27017 \
+      -e MONGO_INITDB_ROOT_USERNAME=admin \
+      -e MONGO_INITDB_ROOT_PASSWORD=password123 \
+      mongo:7.0
+    ```
+
+4.  **アプリケーションをビルド**:
+    ```bash
+    ./gradlew build
+    ```
+
+5.  **アプリケーションを実行**:
+    ```bash
+    ./gradlew run
+    ```
+    ホットリロードを有効にして開発する場合は、`--continuous`フラグを追加します。
+    ```bash
+    ./gradlew run --continuous
+    ```
+
 ## プロジェクト構造
 
 ```
@@ -149,6 +188,18 @@ suspend fun createUser(user: User): Result<User>
 ```
 
 ## テスト
+
+### アプリケーションの動作確認 (ヘルスチェック)
+
+アプリケーションが起動したら、以下のコマンドで動作確認ができます。
+
+```bash
+# ヘルスチェック
+curl http://localhost:8080/health
+
+# アプリケーション情報
+curl http://localhost:8080/api/v1/info
+```
 
 ### テストの実行
 
@@ -247,7 +298,7 @@ java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar app
 
 ```bash
 # JFR（Java Flight Recorder）を使用
-java -XX:+FlightRecorder -XX:StartFlightRecording=duration=60s,filename=profile.jfr -jar app.jar
+java -XX:+FlightRecorder -XX:StartFlightRecording=duration=60s,filename=profile.jfr -jar build/libs/fomage-all.jar
 ```
 
 ## リリースプロセス
@@ -394,4 +445,36 @@ tail -f logs/application.log
 
 # APIモジュールのテスト
 ./gradlew :fomage-api:test
-``` 
+```
+
+## 開発ワークフロー
+
+一般的な開発フローは以下の通りです。
+
+1.  **ブランチの作成**:
+    `main`ブランチから新しい機能ブランチを作成します。
+    ```bash
+    git checkout -b feature/your-new-feature
+    ```
+
+2.  **コードの編集**:
+    IDEでコードを編集し、機能を追加・修正します。
+
+3.  **テストの実行**:
+    変更によって既存の機能が壊れていないか、テストを実行して確認します。
+    ```bash
+    ./gradlew test
+    ```
+
+4.  **コミット**:
+    変更内容をコミットします。
+    ```bash
+    git add .
+    git commit -m "feat: Add your new feature"
+    ```
+
+5.  **プルリクエストの作成**:
+    リモートリポジトリにプッシュし、プルリクエストを作成してレビューを依頼します。
+    ```bash
+    git push origin feature/your-new-feature
+    ```

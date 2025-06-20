@@ -19,7 +19,6 @@
 ### 🚀 スタートガイド
 
 - **[クイックスタートガイド](quickstart.md)** - 5分で始める`fomage`のセットアップ
-- **[fonsoleとの連携](INTEGRATION.md)** - `fonsole`と`fomage`を連携させるための詳細ガイド
 
 ### 👨‍💻 開発者向け
 
@@ -28,24 +27,20 @@
 - **[管理パネル仕様](SPECIFICATIONS.md)** - 管理パネルの機能・非機能要件
 - **[APIドキュメント](API_OVERVIEW.md)** - APIの概要、認証、共通仕様
 - **[エンドポイント](ENDPOINTS.md)** - APIエンドポイント一覧
-- **[データモデル](DATA_MODELS.md)** - APIのデータモデル定義
+- **[共通データモデル](../shared/data-models.md)** - APIの共通データモデル定義
 
 ### 🏗️ アーキテクチャ
 
 - **[システム設計](ARCHITECTURE.md)** - `fomage`のアーキテクチャと技術スタック
-- **[データベース設計](DATABASE.md)** - `fomage`が使用するデータベースのスキーマ
+- **[MongoDBモデル](../shared/mongodb-models.md)** - `fomage`が使用するデータベースのスキーマ
 
 ### 🚢 デプロイと運用
 
 - **[Kubernetesガイド](KUBERNETES.md)** - コンテナ化とデプロイメント手順
-- **[本番環境セットアップ](PRODUCTION.md)** - 本番環境での`fomage`運用ガイド
 - **[環境変数設定](CONFIGURATION.md)** - 運用環境での設定値
-- **[監視とログ](MONITORING.md)** - GrafanaとPrometheusによる監視
-- **[トラブルシューティング](TROUBLESHOOTING.md)** - よくある問題と解決策
 
 ### 🔒 セキュリティ
 
-- **[セキュリティガイド](SECURITY.md)** - セキュリティのベストプラクティス
 - **[認証・認可](AUTHENTICATION.md)** - `fomage`のユーザー認証と権限管理
 
 ## 🎯 ドキュメントの使い方
@@ -53,22 +48,20 @@
 ### 初めて利用する方
 
 1.  **[クイックスタートガイド](quickstart.md)** を読み、`fomage`を動かしてみましょう。
-2.  **[fonsoleとの連携](INTEGRATION.md)** を参考に、既存の`fonsole`プロジェクトに接続します。
+2.  （`fonsole`との連携方法は `ARCHITECTURE.md` や `quickstart.md` を参照してください）
 
 ### 開発者の方
 
 1.  **[開発ガイド](DEVELOPMENT.md)** で開発環境をセットアップしてください。
 2.  **[環境変数設定](CONFIGURATION.md)** で必要な設定を行ってください。
 3.  **[APIドキュメント](API_OVERVIEW.md)** でAPIの全体像を把握してください。
-4.  必要に応じて **[エンドポイント](ENDPOINTS.md)** や **[データモデル](DATA_MODELS.md)** を参照してください。
+4.  必要に応じて **[エンドポイント](ENDPOINTS.md)** や **[共通データモデル](../shared/data-models.md)** を参照してください。
 5.  **[システム設計](ARCHITECTURE.md)** で`fomage`の内部構造を理解してください。
 
 ### 運用担当者の方
 
 1.  **[Kubernetesガイド](KUBERNETES.md)** でデプロイ方法を確認してください。
-2.  **[本番環境セットアップ](PRODUCTION.md)** で本番環境を構築してください。
-3.  **[環境変数設定](CONFIGURATION.md)** で本番用の設定を行ってください。
-4.  **[監視とログ](MONITORING.md)** で運用監視を設定してください。
+2.  **[環境変数設定](CONFIGURATION.md)** で本番用の設定を行ってください。
 
 ## 📋 ドキュメントの更新
 
@@ -95,16 +88,12 @@
 | キーワード | 関連ドキュメント |
 |-----------|-----------------|
 | セットアップ | [クイックスタートガイド](quickstart.md) |
-| 連携 | [fonsoleとの連携](INTEGRATION.md) |
 | 開発環境 | [開発ガイド](DEVELOPMENT.md) |
 | 設定 | [環境変数設定](CONFIGURATION.md) |
 | API | [APIドキュメント](API_OVERVIEW.md) |
 | エンドポイント | [エンドポイント](ENDPOINTS.md) |
 | Kubernetes | [Kubernetesガイド](KUBERNETES.md) |
-| デプロイ | [本番環境セットアップ](PRODUCTION.md) |
-| 監視 | [監視とログ](MONITORING.md) |
-| セキュリティ | [セキュリティガイド](SECURITY.md) |
-| トラブル | [トラブルシューティング](TROUBLESHOOTING.md) |
+| 認証 | [認証・認可](AUTHENTICATION.md) |
 
 ## 📞 サポート
 
@@ -135,16 +124,7 @@
 2. **編集レビュー**: 文章の品質と分かりやすさを確認
 3. **ユーザビリティテスト**: 実際のユーザーが理解できるかを確認
 
-## 🔄 更新履歴
 
-| 日付 | 更新内容 | 更新者 |
-|------|----------|--------|
-| 2024-01-01 | 初回作成 | 開発チーム |
-| 2024-01-01 | クイックスタートガイド追加 | 開発チーム |
-| 2024-01-01 | APIドキュメント追加 | 開発チーム |
-| 2024-01-02 | Fomage概要とfonsole連携の説明を追加 | AIアシスタント |
-
----
 
 **注意**: このドキュメントは継続的に更新されます。最新の情報を確認するために、定期的にチェックしてください。
 
