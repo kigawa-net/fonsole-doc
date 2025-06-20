@@ -353,4 +353,18 @@
   },
   "message": "Settings updated successfully"
 }
-``` 
+```
+
+## データ管理API
+
+`fonsole`のバックアップデータを管理するための基本的なAPIです。
+
+| メソッド | パス | 説明 |
+|---|---|---|
+| `GET` | `/api/v1/data` | データ一覧取得 |
+| `GET` | `/api/v1/data/{id}` | データ詳細取得 |
+| `POST` | `/api/v1/data` | データ作成 |
+| `PUT` | `/api/v1/data/{id}` | データ更新 |
+| `DELETE` | `/api/v1/data/{id}` | データ削除 |
+| `GET` | `/api/v1/data/projects` | プロジェクト一覧取得 |
+| `GET` | `/api/v1/data/types` | データタイプ一覧取得 | 

@@ -1,37 +1,67 @@
-# クイックスタートガイド
+# クイックスタート
 
-このガイドでは、Fomageアプリケーションを素早くセットアップして実行する方法を説明します。
+このガイドでは、`fomage`をローカル環境でセットアップし、実行するまでの手順を説明します。
 
-## 🚀 5分で始める
+## セットアップ
 
 ### 前提条件
 
-- [Docker](https://docs.docker.com/get-docker/) と [Docker Compose](https://docs.docker.com/compose/install/) がインストールされていること
-- Git がインストールされていること
+- Java 17以上
+- Gradle 7.0以上
+- MongoDB 4.4以上
 
-### 手順
+### インストール
 
-1. **リポジトリをクローン**
-   ```bash
-   git clone <repository-url>
-   cd fomage
-   ```
+1.  リポジトリをクローン
+    ```bash
+    git clone <repository-url>
+    cd fomage
+    ```
 
-2. **環境変数を設定**
-   ```bash
-   cp env.example .env
-   # .envファイルを必要に応じて編集
-   ```
+2.  プロジェクトをビルド
+    ```bash
+    ./gradlew build
+    ```
 
-3. **Docker Composeで起動**
-   ```bash
-   docker-compose up -d
-   ```
+3.  MongoDBを起動
+    ```bash
+    # MongoDBがインストールされている場合
+    mongod
+    
+    # Dockerを使用する場合
+    docker run -d -p 27017:27017 --name mongodb mongo:4.4
+    ```
 
-4. **アプリケーションの確認**
-   - アプリケーション: http://localhost:8080
-   - MongoDB管理UI: http://localhost:8081 (admin/password123)
-   - Grafanaダッシュボード: http://localhost:3000 (admin/admin123)
+## 実行
+
+### 開発環境での実行
+
+1.  REST APIを起動
+    ```bash
+    ./gradlew :fomage-api:bootRun
+    ```
+
+2.  Web UIを起動（別のターミナルで）
+    ```bash
+    ./gradlew :fomage:bootRun
+    ```
+
+### 本番環境での実行
+
+1.  JARファイルをビルド
+    ```bash
+    ./gradlew :fomage-api:bootJar
+    ./gradlew :fomage:bootJar
+    ```
+
+2.  アプリケーションを起動
+    ```bash
+    # API
+    java -jar fomage-api/build/libs/fomage-api-0.0.1-SNAPSHOT.jar
+    
+    # Web UI
+    java -jar fomage/build/libs/fomage-0.0.1-SNAPSHOT.jar
+    ```
 
 ## 📋 詳細なセットアップ
 

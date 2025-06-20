@@ -360,4 +360,38 @@ tail -f logs/application.log
 - [Kotlin公式ドキュメント](https://kotlinlang.org/docs/home.html)
 - [Gradle公式ドキュメント](https://docs.gradle.org/)
 - [MongoDB Kotlin Driver](https://mongodb.github.io/mongo-kotlin-driver/)
-- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) 
+- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+
+## モジュールの追加
+
+新しいモジュールをプロジェクトに追加する手順は以下の通りです。
+
+1.  `settings.gradle`にモジュールを追加します。
+    ```gradle
+    include 'new-module'
+    ```
+
+2.  新しいモジュールのための`build.gradle`を作成します。
+
+3.  必要な依存関係を`build.gradle`に設定します。
+
+## テストの実行
+
+プロジェクトのテストはGradleを使用して実行します。
+
+### 全モジュールのテスト
+
+```bash
+# 全モジュールのテストを一度に実行
+./gradlew test
+```
+
+### 特定のモジュールのテスト
+
+```bash
+# Web UIモジュールのテスト
+./gradlew :fomage:test
+
+# APIモジュールのテスト
+./gradlew :fomage-api:test
+``` 

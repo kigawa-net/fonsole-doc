@@ -1,6 +1,19 @@
-# Kubernetes ガイド
+# Kubernetesガイド
 
-このガイドでは、`fomage`アプリケーションをKubernetesクラスタにデプロイする方法を説明します。
+このドキュメントでは、`fomage`アプリケーションをコンテナ化し、Kubernetesにデプロイする方法の概要を説明します。
+
+## Docker
+
+`fomage`の各モジュール（Web UI, REST API）は、個別のDockerfileを使用してコンテナ化することが推奨されます。これにより、モジュールごとに独立してビルド、デプロイ、スケールすることが可能になります。
+
+## Kubernetes
+
+Kubernetes環境では、各コンテナ化されたモジュールを個別の`Deployment`としてデプロイします。
+
+-   **fomage-api**: REST APIサーバーの`Deployment`
+-   **fomage**: Web UIサーバーの`Deployment`
+
+これらの`Deployment`間の通信は、Kubernetesの`Service`リソースを利用して実現します。例えば、`fomage`のUIコンテナは、`fomage-api`の`Service`名（例: `fomage-api-service`）を使ってAPIにアクセスします。
 
 ## 前提条件
 
