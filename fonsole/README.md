@@ -18,6 +18,128 @@
 -   [**クイックスタート**](./QUICKSTART.md): `fonsole`の基本的な使い方と設定方法について説明します。
 -   [**API (MongoDB スキーマ)**](./API.md): `fonsole`が使用するMongoDBのコレクションとスキーマについて説明します。
 
+---
+
+## MongoDB ドキュメント一覧
+
+### projects コレクション
+
+- プロジェクトごとの情報を管理します。
+
+#### ドキュメント例
+
+```json
+{
+  "_id": "653a1234567890abcdef12345",
+  "name": "my-project",
+  "backupIds": [
+    "653b67890abcdef1234567890",
+    "653c0123456789abcdef12345"
+  ]
+}
+```
+
+| フィールド名   | 型             | 説明                                         |
+|:--------------|:---------------|:---------------------------------------------|
+| `_id`         | ObjectId        | ドキュメントの一意なID                      |
+| `name`        | String          | プロジェクト名（環境変数`PROJECT_NAME`）     |
+| `backupIds`   | Array<ObjectId> | このプロジェクトに属するバックアップIDリスト |
+
+#### 対応Kotlinクラス
+
+```kotlin
+package net.kigawa.fonsole.document
+
+import org.bson.types.ObjectId
+
+data class ProjectDocument(
+    val name: String,
+    val backupIds: List<ObjectId>,
+)
+```
+
+---
+
+### backups コレクション
+
+- 各バックアップ処理の情報を管理します。
+
+#### ドキュメント例
+
+```json
+{
+  "_id": "653b67890abcdef1234567890",
+  "startDate": "2023-10-27T10:00:00Z",
+  "rootDirectory": {
+    "name": "backup",
+    "files": [
+      {
+        "name": "file1.txt",
+        "fileId": "653d4567890abcdef12345678"
+      }
+    ],
+    "directories": [
+      {
+        "name": "subdir",
+        "files": [],
+        "directories": []
+      }
+    ]
+  },
+  "endDate": "2023-10-27T10:05:00Z",
+  "removeRequest": false
+}
+```
+
+| フィールド名     | 型         | 説明                                         |
+|:----------------|:-----------|:---------------------------------------------|
+| `_id`           | ObjectId   | ドキュメントの一意なID                      |
+| `startDate`     | Date       | バックアップ処理の開始日時                   |
+| `rootDirectory` | Object     | バックアップ対象のディレクトリ構造           |
+| `endDate`       | Date       | バックアップ処理の終了日時                   |
+| `removeRequest` | Boolean    | 削除対象としてマークされているか             |
+
+#### 対応Kotlinクラス
+
+```kotlin
+package net.kigawa.fonsole.document
+
+import net.kigawa.fonsole.model.DirectoryModel
+import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.types.ObjectId
+import java.time.LocalDateTime
+
+data class BackupDocument(
+    @BsonId
+    val id: ObjectId,
+    val startDate: LocalDateTime,
+    val rootDirectory: DirectoryModel? = null,
+    val endDate: LocalDateTime? = null,
+    val removeRequest: Boolean = false,
+)
+```
+
+---
+
+### GridFS（fs.files, fs.chunks）
+
+- バックアップファイル本体はGridFS（`fs.files`と`fs.chunks`）に保存されます。
+- `fs.files`にはファイルのメタデータ、`fs.chunks`にはファイル本体の分割データが格納されます。
+
+#### fs.files ドキュメント例
+
+```json
+{
+  "_id": "653d4567890abcdef12345678",
+  "filename": "file1.txt",
+  "length": 12345,
+  "uploadDate": "2023-10-27T10:00:01Z"
+  // ...その他GridFSの標準フィールド
+}
+```
+
+---
+
 ## 使い方
 
 `fonsole` はDockerイメージとして提供されています。`docker run` コマンドで簡単に実行できます。
