@@ -34,15 +34,17 @@ http://localhost:8080/api/v1
 
 ## 認証
 
-Fomage APIは、リクエストの認証にAPIキーを使用します。すべてのリクエストには、`Authorization`ヘッダーに有効なAPIキーを含める必要があります。
+Fomage APIは、リクエストの認証に[Keycloak](https://www.keycloak.org/)を利用したOAuth 2.0アクセストークンを使用します。すべてのリクエストには、`Authorization`ヘッダーに有効なアクセストークンを含める必要があります。
 
 **ヘッダー形式**
 
 ```
-Authorization: Bearer <YOUR_API_KEY>
+Authorization: Bearer <YOUR_ACCESS_TOKEN>
 ```
 
-APIキーは、Fomageの管理画面から発行できます。
+アクセストークンは、Keycloakの認証サーバーから取得します。一般的なOAuth 2.0のフロー（例: クライアントクレデンシャルズフロー、認可コードフロー）を利用してトークンを取得してください。
+
+詳細な認証・認可のフローについては、`AUTHENTICATION.md`（現在準備中）を参照してください。
 
 ## エラーハンドリング
 
@@ -91,18 +93,18 @@ Retry-After: 60
 ```bash
 curl -X GET \
   http://localhost:8080/api/v1/users \
-  -H 'Authorization: Bearer <YOUR_API_KEY>'
+  -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
 ```
 
 ### JavaScript (fetch)
 
 ```javascript
-const apiKey = '<YOUR_API_KEY>';
+const accessToken = '<YOUR_ACCESS_TOKEN>';
 const url = 'http://localhost:8080/api/v1/users';
 
 fetch(url, {
   headers: {
-    'Authorization': `Bearer ${apiKey}`
+    'Authorization': `Bearer ${accessToken}`
   }
 })
 .then(response => response.json())

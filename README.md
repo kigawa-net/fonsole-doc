@@ -16,7 +16,7 @@
 ```
 fonsole-doc/
 ├── shared/    # 共通データモデル
-├── fomage/    # Web UI・API管理ツール
+├── fomage/    # Web UI・API管理パネル
 ├── fonsole/   # バックアップCLIツール
 └── README.md  # 本ドキュメント
 ```
